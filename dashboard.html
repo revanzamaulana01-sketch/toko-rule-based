@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toko Rule Based System</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e);min-height:100vh;color:#fff}
+.container{max-width:430px;margin:auto;padding:20px}
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:30px 24px}
+.header{text-align:center;margin-bottom:24px}.header h1{font-size:22px;color:#4fc3f7}.header p{font-size:13px;color:#90a4ae;margin-top:6px}
+.logo{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:auto auto 16px;font-size:30px;background:linear-gradient(135deg,#4fc3f7,#29b6f6)}
+label{display:block;font-size:13px;color:#b0bec5;margin-bottom:6px;font-weight:500}
+input{width:100%;padding:12px 16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:15px;outline:none}
+input:focus{border-color:#4fc3f7}.form-group{margin-bottom:16px}
+.btn{width:100%;padding:14px;border:0;border-radius:10px;background:linear-gradient(135deg,#4fc3f7,#29b6f6);color:#1a1a2e;font-size:16px;font-weight:600;cursor:pointer}.btn:active{transform:scale(.98)}
+.error{color:#ef5350;font-size:13px;text-align:center;margin-top:12px;display:none}
+.info{background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.3);border-radius:10px;padding:14px;font-size:12px;color:#b0bec5;margin-top:16px}
+#dashboard{display:none}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.top h2{font-size:18px;color:#4fc3f7}.badge{background:rgba(79,195,247,.2);border-radius:20px;padding:6px 14px;font-size:12px;color:#4fc3f7}
+.stats{display:flex;gap:10px;margin-bottom:20px}.stat{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;text-align:center}.stat b{display:block;font-size:24px;color:#4fc3f7}.stat span{font-size:11px;color:#90a4ae}
+.section{font-size:14px;color:#b0bec5;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}.rule{background:rgba(255,255,255,.05);border-left:3px solid #4fc3f7;border-radius:8px;padding:12px 14px;margin-bottom:10px;font-size:13px}.rule b{color:#e0e0e0}.rule small{display:block;color:#90a4ae;margin-top:4px}.logout{background:rgba(239,83,80,.2);color:#ef5350;border:1px solid rgba(239,83,80,.3);padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer}.add{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px;color:#fff;width:100%;margin:8px 0}.result{margin-top:16px;padding:14px;border-radius:10px;background:rgba(76,175,80,.15);border:1px solid rgba(76,175,80,.3);font-size:13px}.result b{color:#81c784}.empty{text-align:center;color:#78909c;padding:20px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card" id="loginPage">
+<div class="header"><div class="logo">🏪</div><h1>Toko Rule Based System</h1><p>Forward Chaining Dashboard</p></div>
+<div class="form-group"><label>Username</label><input id="username" value="admin" placeholder="Masukkan username"></div>
+<div class="form-group"><label>Password</label><input id="password" type="password" value="admin123" placeholder="Masukkan password"></div>
+<button class="btn" onclick="doLogin()">Masuk</button><div class="error" id="error">Username atau password salah!</div>
+<div class="info"><b>Demo Akun:</b><br>admin / admin123<br>kasir / kasir123<br>owner / toko123</div>
+</div>
+<div id="dashboard"><div class="top"><h2>Dashboard</h2><span class="badge" id="userBadge">Admin</span></div>
+<div class="stats"><div class="stat"><b id="transaksiCount">0</b><span>Transaksi</span></div><div class="stat"><b id="barangCount">4</b><span>Barang</span></div><div class="stat"><b id="ruleCount">4</b><span>Aturan</span></div></div>
+<div class="section">Basis Pengetahuan</div><div class="info">Buku: Rp25.000 · Pensil: Rp5.000 · Pulpen: Rp8.000 · Penghapus: Rp3.000</div>
+<div class="section">Rule Base (IF-THEN)</div>
+<div class="rule"><b>Diskon 10%</b><small>Jika total > Rp50.000</small></div>
+<div class="rule"><b>Potong member 5%</b><small>Jika pelanggan member</small></div>
+<div class="rule"><b>Gratis pulpen</b><small>Jika beli buku > 3 pcs</small></div>
+<div class="rule"><b>Gratis penghapus</b><small>Jika beli pensil >= 5 pcs</small></div>
+<div class="section">Simulasi Forward Chaining</div>
+<select id="item" class="add"><option value="buku">Buku - Rp25.000</option><option value="pensil">Pensil - Rp5.000</option><option value="pulpen">Pulpen - Rp8.000</option><option value="penghapus">Penghapus - Rp3.000</option></select>
+<input id="qty" type="number" class="add" value="1" min="1" placeholder="Jumlah"><label><input type="checkbox" id="member" style="width:auto"> Pelanggan member</label>
+<button class="btn" onclick="tambahItem()">Tambah ke Keranjang</button><div id="cartView"></div><button class="btn" style="background:linear-gradient(135deg,#81c784,#4caf50)" onclick="prosesForward()">Proses Forward Chaining</button><div id="result"></div>
+<button class="logout" onclick="logout()" style="margin-top:18px">Keluar</button></div>
+</div>
+<script>
+const users={admin:'admin123',kasir:'kasir123',owner:'toko123'},stock={buku:25000,pensil:5000,pulpen:8000,penghapus:3000},rules=[{n:'Diskon 10%',c:f=>f.total>50000,a:f=>{f.diskon=(f.diskon||0)+f.total*.1}},{n:'Potong member 5%',c:f=>f.member,a:f=>{f.diskon=(f.diskon||0)+f.total*.05}},{n:'Gratis pulpen',c:f=>(f.barang.buku||0)>3,a:f=>f.bonus='1 pulpen'},{n:'Gratis penghapus',c:f=>(f.barang.pensil||0)>=5,a:f=>f.bonus='1 penghapus'}];
+let session=null,cart=[];
+function doLogin(){let u=document.querySelector('#username').value.trim(),p=document.querySelector('#password').value;if(users[u]===p){session={user:u};document.querySelector('#loginPage').style.display='none';document.querySelector('#dashboard').style.display='block';document.querySelector('#userBadge').textContent=u;renderCart()}else document.querySelector('#error').style.display='block'}
+function tambahItem(){let i=document.querySelector('#item').value,q=+document.querySelector('#qty').value||1;cart.push({item:i,qty:q});renderCart()}
+function renderCart(){let v=document.querySelector('#cartView');v.innerHTML=cart.length?'<div class="section">Keranjang</div>'+cart.map((x,qty)=>`<div class="rule"><b>${x.item}</b> × ${x.qty}<small>${rupiah(stock[x.item]*x.qty)}</small><button onclick="hapusItem(${qty})" style="float:right;background:none;border:0;color:#ef5350;cursor:pointer">Hapus</button></div>`).join(''):'<div class="empty">Keranjang kosong</div>'}
+function hapusItem(i){cart.splice(i,1);renderCart()}
+function rupiah(n){return 'Rp'+n.toLocaleString('id-ID')}
+function prosesForward(){if(!cart.length){alert('Keranjang kosong');return}let f={barang:{},member:document.querySelector('#member').checked};cart.forEach(x=>f.barang[x.item]=(f.barang[x.item]||0)+x.qty);f.total=cart.reduce((s,x)=>s+stock[x.item]*x.qty,0);let fired=[],changed=true;while(changed){changed=false;rules.forEach(r=>{if(!fired.includes(r.n)&&r.c(f)){r.a(f);fired.push(r.n);changed=true}})}document.querySelector('#result').innerHTML=`<div class="result"><b>Hasil Forward Chaining</b><br>Total awal: ${rupiah(f.total)}<br>Aturan terpicu: ${fired.join(', ')||'Tidak ada'}<br>Diskon: ${rupiah(f.diskon||0)}<br>Bonus: ${f.bonus||'-'}<br><b>Bayar: ${rupiah(f.total-(f.diskon||0))}</b></div>`;document.querySelector('#transaksiCount').textContent=+document.querySelector('#transaksiCount').textContent+1}
+function logout(){session=null;cart=[];document.querySelector('#dashboard').style.display='none';document.querySelector('#loginPage').style.display='block';document.querySelector('#result').innerHTML='';renderCart()}
+</script>
+</body></html>
