@@ -75,7 +75,7 @@ if __name__ == "__main__":
     }
 
     # Hitung total
-    total = sum(qty * stok[item] for item, qty in keranjang.items())
+    total = sum(qty * stok[item] for item, qty in keranjang.items() if item in stok)
     keranjang["total"] = total
 
     print(f"\nFakta awal: {keranjang}")
